@@ -10,6 +10,7 @@ import {
   TouchableHighlight,
   TouchableOpacity,
   Dimensions,
+  Platform
 } from 'react-native';
 
 const reactNativePackage = require('react-native/package.json');
@@ -173,6 +174,7 @@ export default class Slideshow extends Component {
     const width = this.state.width;
     const height = this.props.height || this.state.height;
     const position = this._getPosition();
+    const pagingEnabled = Platform.OS === 'android' ? true : false
     return (
       <View style={[
           this.props.containerStyle,
@@ -183,6 +185,7 @@ export default class Slideshow extends Component {
           ref={ref => this._onRef(ref)}
           decelerationRate={0.99}
           horizontal={true}
+          pagingEnabled={pagingEnabled}
           showsHorizontalScrollIndicator={false}
           scrollEnabled={this.props.scrollEnabled}
           {...this._panResponder.panHandlers}
