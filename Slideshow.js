@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {
   Image,
   Text,
@@ -170,6 +171,36 @@ export default class Slideshow extends Component {
     clearInterval(this._interval);
   }
 
+  _renderIndicator(position) {
+    const result = []
+    if(this.props.isDisplayIndicator) {
+      this.props.dataSource.map((image, index) => {
+        result.push(
+          <TouchableOpacity
+            key={index}
+            onPress={() => { return this._move(index); }}
+            style={[
+              [
+                styles.indicator, 
+                setIndicatorSize(this.props.indicatorSize), 
+                setIndicatorColor(this.props.indicatorColor)
+              ], 
+              position === index && 
+              [
+                styles.indicatorSelected, 
+                setIndicatorColor(this.props.indicatorSelectedColor)
+              ]
+            ]}>
+          <View></View>
+        </TouchableOpacity>
+        )
+      })
+    } else {
+      return null
+    }
+    return result
+  }
+
   render() {
     const width = this.state.width;
     const height = this.props.height || this.state.height;
@@ -240,26 +271,7 @@ export default class Slideshow extends Component {
           style={[
             styles.layoutIndicator, 
           ]}>
-          {this.props.dataSource.map((image, index) => {
-            return (
-              <TouchableOpacity
-                key={index}
-                onPress={() => { return this._move(index); }}
-                style={[
-                  [
-                    styles.indicator, 
-                    setIndicatorSize(this.props.indicatorSize), 
-                    setIndicatorColor(this.props.indicatorColor)
-                  ], 
-                  position === index && 
-                  [
-                    styles.indicatorSelected, 
-                    setIndicatorColor(this.props.indicatorSelectedColor)
-                  ]
-                ]}>
-              <View></View>
-            </TouchableOpacity>);
-          })}
+          {this._renderIndicator(position)}
         </View>
         {/* END SECTION INDICATOR */}
         {/* SECTION ARROW LEFT */}
@@ -315,6 +327,7 @@ Slideshow.defaultProps = {
   indicatorColor: '#CCCCCC',
   indicatorSelectedColor: '#FFFFFF',
   scrollEnabled: true,
+  isDisplayIndicator: false,
   arrowSize: 16,
 }
 
@@ -330,6 +343,7 @@ Slideshow.propTypes = {
 	height: PropTypes.number,
 	position: PropTypes.number,
   scrollEnabled: PropTypes.bool,
+  isDisplayIndicator: PropTypes.bool,
   containerStyle: PropTypes.object,
   overlay: PropTypes.bool,
 	arrowSize: PropTypes.number,
